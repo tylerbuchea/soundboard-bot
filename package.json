@@ -1,6 +1,6 @@
 {
   "name": "soundboard-bot",
-  "script":{
+  "scripts":{
     "start" : "node app.js"
   },
   "dependencies": {
