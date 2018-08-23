@@ -2,7 +2,7 @@ const {
   BotFrameworkAdapter,
   MemoryStorage,
   ConversationState,
-  Message,
+  MessageFactory,
 } = require('botbuilder');
 const restify = require('restify');
 
@@ -29,13 +29,8 @@ server.post('/api/messages', (req, res) => {
     if (context.activity.type === 'message') {
       const state = conversationState.get(context);
       const count = state.count === undefined ? state.count = 0 : ++state.count;
-      const msg = new Message(context).addAttachment({
-        contentUrl: 'http://www.pachd.com/sfx/traffic-8.mp3',
-        contentType: 'audio/mpeg',
-        name: 'My video clip'
-      });
-      // return context.sendActivity(`${count}: You said "${context.activity.text}"`);
-      return context.send(msg);
+      const audioFile = MessageFactory.contentUrl('http://www.pachd.com/sfx/traffic-8.mp3', 'audio/mpeg');
+      return context.sendActivity(audioFile);
     } else {
       return context.sendActivity(`[${context.activity.type} event detected]`);
     }
