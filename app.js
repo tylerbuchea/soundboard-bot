@@ -1,7 +1,8 @@
 const {
   BotFrameworkAdapter,
   MemoryStorage,
-  ConversationState
+  ConversationState,
+  Message,
 } = require('botbuilder');
 const restify = require('restify');
 
@@ -21,12 +22,6 @@ const adapter = new BotFrameworkAdapter({
 const conversationState = new ConversationState(new MemoryStorage());
 adapter.use(conversationState);
 
-var attachment = {
-  contentUrl: 'http://www.pachd.com/sfx/traffic-8.mp3',
-  contentType: 'audio/mpeg',
-  name: 'My video clip'
-};
-
 // Listen for incoming requests 
 server.post('/api/messages', (req, res) => {
   // Route received request to adapter for processing
@@ -34,7 +29,13 @@ server.post('/api/messages', (req, res) => {
     if (context.activity.type === 'message') {
       const state = conversationState.get(context);
       const count = state.count === undefined ? state.count = 0 : ++state.count;
-      return context.addAttachment(attachment).sendActivity(`${count}: You said "${context.activity.text}"`);
+      const msg = new Message(context).addAttachment({
+        contentUrl: 'http://www.pachd.com/sfx/traffic-8.mp3',
+        contentType: 'audio/mpeg',
+        name: 'My video clip'
+      });
+      // return context.sendActivity(`${count}: You said "${context.activity.text}"`);
+      return context.send(msg);
     } else {
       return context.sendActivity(`[${context.activity.type} event detected]`);
     }
